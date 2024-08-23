@@ -10,12 +10,15 @@ namespace KiemTraThuViec1.Services
         private readonly ISanPhamRepository _SanPhamRepository;
         private readonly IDonViTinhRepository _IDonViTinhRepository;
         private readonly IVatTuRepository _IVatTuRepository;
+        private readonly ISanPhamVatTuRepository _sanPhamVatTuRepository;
 
-        public SanPhamService(ISanPhamRepository SanPhamRepository, IDonViTinhRepository iDonViTinhRepository, IVatTuRepository vatTuRepository)
+        public SanPhamService(ISanPhamRepository SanPhamRepository, IDonViTinhRepository iDonViTinhRepository,
+            IVatTuRepository vatTuRepository, ISanPhamVatTuRepository sanPhamVatTuRepository)
         {
             _SanPhamRepository = SanPhamRepository;
             _IDonViTinhRepository = iDonViTinhRepository;
             _IVatTuRepository = vatTuRepository;
+            _sanPhamVatTuRepository = sanPhamVatTuRepository;
         }
         ResponseDTO ISanPhamService.AddSanPham(SanPhamDTO dto)
         {
@@ -35,7 +38,6 @@ namespace KiemTraThuViec1.Services
                                 DonViTinhId = donViTinh.Id,
                                 DonViTinh = donViTinh
                             };
-                            int check = 0;
                             List<SanPhamVatTu> vatTuList = new List<SanPhamVatTu>();
                             foreach (var vatTu in dto.VatTus)
                             {
@@ -56,28 +58,29 @@ namespace KiemTraThuViec1.Services
                                     }
                                     else
                                     {
-                                        check = 1;
-                                        break;
+                                        return new ResponseDTO()
+                                        {
+                                            code = 400,
+                                            message = "số lượng bé hơn hoặc bằng 0",
+                                            description = null
+                                        };
                                     }
                                 }
                                 else
                                 {
-                                    check = 1;
-                                    break;
+                                    return new ResponseDTO()
+                                    {
+                                        code = 400,
+                                        message = "ma vat tu khong ton tai",
+                                        description = null
+                                    };
                                 }
 
                             }
-
-                            if (check == 1)
+                            foreach (var sanPhamVatTu in vatTuList)
                             {
-                                return new ResponseDTO()
-                                {
-                                    code = 400,
-                                    message = "ma vat tu khong ton tai",
-                                    description = null
-                                };
+                                _sanPhamVatTuRepository.AddSanPhamVatTu(sanPhamVatTu);
                             }
-
                             _SanPhamRepository.AddSanPham(sanPham);
                             if (_SanPhamRepository.IsSaveChange()) return new ResponseDTO()
                             {

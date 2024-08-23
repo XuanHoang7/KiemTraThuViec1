@@ -15,6 +15,10 @@ namespace KiemTraThuViec1.Repository
         {
             return _context.LoaiVatTus.Where(lvt => lvt.TenLoaiVatTu.Equals(name)).ToList();
         }
+        List<LoaiVatTu>? ILoiVatTuRepository.GetLoaiVatTus()
+        {
+            return _context.LoaiVatTus.ToList();
+        }
 
         LoaiVatTu? ILoiVatTuRepository.GetLoaiVatTuByMa(string maLoaiVatTu)
         {

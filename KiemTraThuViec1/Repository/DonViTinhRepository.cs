@@ -16,6 +16,11 @@ namespace KiemTraThuViec1.Repository
             return _context.DonViTinhs.Where(lvt => lvt.TenDonViTinh.Equals(name)).ToList();
         }
 
+        List<DonViTinh>? IDonViTinhRepository.GetDonViTinhs()
+        {
+            return _context.DonViTinhs.ToList();
+        }
+
         DonViTinh? IDonViTinhRepository.GetDonViTinhByMa(string maDonViTinh)
         {
             return _context.DonViTinhs.FirstOrDefault(lvt => lvt.MaDonViTinh.Equals(maDonViTinh.Trim().ToUpper().Replace(" ", string.Empty)));

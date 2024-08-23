@@ -15,6 +15,10 @@ namespace KiemTraThuViec1.Repository
         {
             return _context.SanPhams.Where(lvt => lvt.TenSanPham.Equals(name)).ToList();
         }
+        List<SanPham>? ISanPhamRepository.GetSanPhams()
+        {
+            return _context.SanPhams.ToList();
+        }
 
         SanPham? ISanPhamRepository.GetSanPhamByMa(string maSanPham)
         {

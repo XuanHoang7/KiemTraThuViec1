@@ -7,10 +7,12 @@ namespace KiemTraThuViec1.Services
     public class LoaiVatTuService : ILoaiVatTuService
     {
         private readonly ILoiVatTuRepository _loiVatTuRepository;
+        private readonly IVatTuRepository _vatTuRepository;
 
-        public LoaiVatTuService(ILoiVatTuRepository loiVatTuRepository)
+        public LoaiVatTuService(ILoiVatTuRepository loiVatTuRepository, IVatTuRepository vatTuRepository)
         {
             _loiVatTuRepository = loiVatTuRepository;
+            _vatTuRepository = vatTuRepository;
         }
         ResponseDTO ILoaiVatTuService.AddLoaiVatTu(LoaiVatTu loaiVatTu)
         {
@@ -65,6 +67,16 @@ namespace KiemTraThuViec1.Services
             var loaiVatTu = _loiVatTuRepository.GetLoaiVatTuByMa(maLoaiVatTu);
             if (loaiVatTu != null)
             {
+                var hasVatTu = _vatTuRepository.GetVattus().Any(v => v.LoaiVatTuId == loaiVatTu.Id);
+                if (hasVatTu)
+                {
+                    return new ResponseDTO()
+                    {
+                        code = 400,
+                        message = "Không thể xóa loại vật tư này vì nó đang được sử dụng trong các vật tư khác.",
+                        description = null
+                    };
+                }
                 _loiVatTuRepository.DeleteLoaiVatTu(loaiVatTu);
                 if (_loiVatTuRepository.IsSaveChange()) return new ResponseDTO()
                 {

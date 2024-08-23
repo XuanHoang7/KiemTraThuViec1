@@ -7,6 +7,8 @@ namespace KiemTraThuViec1.Repository
     {
         List<DonViTinh>? GetDonViTinhByName(string name);
 
+        List<DonViTinh>? GetDonViTinhs();
+
         DonViTinh? GetDonViTinhByMa(string maDonViTinh);
 
         void AddDonViTinh(DonViTinh donViTinh);

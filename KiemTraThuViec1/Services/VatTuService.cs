@@ -11,12 +11,15 @@ namespace KiemTraThuViec1.Services
         private readonly IVatTuRepository _vatTuRepository;
         private readonly ILoiVatTuRepository _loaiVatTuRepository;
         private readonly IDonViTinhRepository _donViTinhRepository;
+        private readonly ISanPhamVatTuRepository _sanPhamVatTuRepository;
 
-        public VatTuService(IVatTuRepository vatTuRepository, ILoiVatTuRepository loiVatTuRepository, IDonViTinhRepository donViTinhRepository)
+        public VatTuService(IVatTuRepository vatTuRepository, ILoiVatTuRepository loiVatTuRepository, 
+            IDonViTinhRepository donViTinhRepository, ISanPhamVatTuRepository sanPhamVatTuRepository)
         {
             _vatTuRepository = vatTuRepository;
             _loaiVatTuRepository = loiVatTuRepository;
             _donViTinhRepository = donViTinhRepository;
+            _sanPhamVatTuRepository = sanPhamVatTuRepository;
         }
         ResponseDTO IVatTuService.AddVatTu(VatTuDTO dto)
         {
@@ -107,6 +110,16 @@ namespace KiemTraThuViec1.Services
             var vatTu = _vatTuRepository.GetVatTuByMa(maVatTu);
             if (vatTu != null)
             {
+                var hasSanPham = _sanPhamVatTuRepository.GetSanPhamVatTus().Any(spvt => spvt.VatTuId == vatTu.Id);
+                if(hasSanPham)
+                {
+                    return new ResponseDTO()
+                    {
+                        code = 400,
+                        message = "Không thể xóa vật tư này vì nó đang được sử dụng trong sản phẩm khác.",
+                        description = null
+                    };
+                }
                 _vatTuRepository.DeleteVatTu(vatTu);
                 if (_vatTuRepository.IsSaveChange()) return new ResponseDTO()
                 {

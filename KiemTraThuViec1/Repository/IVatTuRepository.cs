@@ -6,6 +6,8 @@ namespace KiemTraThuViec1.Repository
     {
         List<VatTu>? GetVatTuByName(string name);
 
+        List<VatTu>? GetVattus();
+
         VatTu? GetVatTuByMa(string maVatTu);
 
         void AddVatTu(VatTu vatTu);

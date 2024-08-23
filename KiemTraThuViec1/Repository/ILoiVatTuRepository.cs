@@ -9,6 +9,8 @@ namespace KiemTraThuViec1.Repository
 
         List<LoaiVatTu>? GetLoaiVatTuByName(string name);
 
+        List<LoaiVatTu>? GetLoaiVatTus();
+
         LoaiVatTu? GetLoaiVatTuByMa(string maLoaiVatTu);
 
         void AddLoaiVatTu(LoaiVatTu loaiVatTu);

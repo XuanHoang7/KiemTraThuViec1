@@ -1,16 +1,20 @@
 ﻿using KiemTraThuViec1.Data.Entities;
 using KiemTraThuViec1.Data;
 using KiemTraThuViec1.Repository;
+using Microsoft.EntityFrameworkCore;
 
 namespace KiemTraThuViec1.Services
 {
     public class DonViTinhService : IDonViTinhService
     {
         private readonly IDonViTinhRepository _DonViTinhRepository;
-
-        public DonViTinhService(IDonViTinhRepository DonViTinhRepository)
+        private readonly IVatTuRepository _VatTuRepository;
+        private readonly ISanPhamRepository _PhamRepository;
+        public DonViTinhService(IDonViTinhRepository DonViTinhRepository, IVatTuRepository vatTuRepository, ISanPhamRepository sanPhamRepository)
         {
             _DonViTinhRepository = DonViTinhRepository;
+            _VatTuRepository = vatTuRepository;
+            _PhamRepository = sanPhamRepository;
         }
         ResponseDTO IDonViTinhService.AddDonViTinh(DonViTinh donViTinh)
         {
@@ -65,6 +69,18 @@ namespace KiemTraThuViec1.Services
             var donViTinh = _DonViTinhRepository.GetDonViTinhByMa(maDonViTinh);
             if (donViTinh != null)
             {
+                var hasVatTus = _VatTuRepository.GetVattus().Any(v => v.DonViTinhId == donViTinh.Id);
+                var hasSanPhams = _PhamRepository.GetSanPhams().Any( sp => sp.DonViTinhId == donViTinh.Id );
+
+                if (hasVatTus || hasSanPhams)
+                {
+                    return new ResponseDTO()
+                    {
+                        code = 400,
+                        message = "Không thể xóa đơn vị tính này vì nó đang được sử dụng trong các vật tư hoặc sản phẩm khác.",
+                        description = null
+                    };
+                }
                 _DonViTinhRepository.DeleteDonViTinh(donViTinh);
                 if (_DonViTinhRepository.IsSaveChange()) return new ResponseDTO()
                 {

@@ -27,6 +27,7 @@ builder.Services.AddScoped<ILoiVatTuRepository, LoiVatTuRepository>();
 builder.Services.AddScoped<IVatTuRepository, VatTuRepository>();
 builder.Services.AddScoped<IDonViTinhRepository, DonViTinhRepository>();
 builder.Services.AddScoped<ISanPhamRepository, SanPhamRepository>();
+builder.Services.AddScoped<ISanPhamVatTuRepository, SanPhamVatTuRepository>();
 //// Add scoped services
 builder.Services.AddScoped<ILoaiVatTuService, LoaiVatTuService>();
 builder.Services.AddScoped<IVatTuService, VatTuService>();

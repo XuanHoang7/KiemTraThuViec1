@@ -16,6 +16,11 @@ namespace KiemTraThuViec1.Repository
             return _context.VatTus.Where(lvt => lvt.TenVatTu.Equals(name)).ToList();
         }
 
+        List<VatTu>? IVatTuRepository.GetVattus()
+        {
+            return _context.VatTus.ToList();
+        }
+
         VatTu? IVatTuRepository.GetVatTuByMa(string maVatTu)
         {
             return _context.VatTus.FirstOrDefault(lvt => lvt.MaVatTu.Equals(maVatTu.Trim().ToUpper().Replace(" ", string.Empty)));

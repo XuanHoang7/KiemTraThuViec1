@@ -7,6 +7,8 @@ namespace KiemTraThuViec1.Repository
     {
         List<SanPham>? GetSanPhamByName(string name);
 
+        List<SanPham>? GetSanPhams();
+
         SanPham? GetSanPhamByMa(string maSanPham);
 
         void AddSanPham(SanPham sanPham);
