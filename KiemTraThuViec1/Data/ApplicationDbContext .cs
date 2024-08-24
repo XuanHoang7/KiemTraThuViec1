@@ -1,9 +1,11 @@
 ﻿using KiemTraThuViec1.Data.Entities;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 namespace KiemTraThuViec1.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
@@ -53,36 +55,5 @@ namespace KiemTraThuViec1.Data
                 .OnDelete(DeleteBehavior.NoAction);
         }
 
-        //public override int SaveChanges()
-        //{
-        //    var entries = ChangeTracker.Entries()
-        //        .Where(e => e.Entity is LoaiVatTu || e.Entity is VatTu || e.Entity is DonViTinh || e.Entity is SanPham);
-
-        //    foreach (var entry in entries)
-        //    {
-        //        if (entry.State == EntityState.Added || entry.State == EntityState.Modified)
-        //        {
-        //            var entity = entry.Entity;
-
-        //            foreach (var property in entry.Properties)
-        //            {
-        //                if (property.Metadata.Name == "MaLoaiVatTu" ||
-        //                    property.Metadata.Name == "MaVatTu" ||
-        //                    property.Metadata.Name == "MaDonViTinh" ||
-        //                    property.Metadata.Name == "MaSanPham")
-        //                {
-        //                    var value = property.CurrentValue as string;
-        //                    if (string.IsNullOrWhiteSpace(value))
-        //                    {
-        //                        throw new DbUpdateException("Mã không được để trống.");
-        //                    }
-        //                    property.CurrentValue = value.Trim().ToUpper().Replace(" ", string.Empty);
-        //                }
-        //            }
-        //        }
-        //    }
-
-        //    return base.SaveChanges();
-        //}
     }
 }

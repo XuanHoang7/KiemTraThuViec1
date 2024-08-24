@@ -10,10 +10,10 @@ namespace KiemTraThuViec1.Services
 
         ResponseDTO GetSanPhamByMa(string maSanPham);
 
-        ResponseDTO AddSanPham(SanPhamDTO sanPham);
+        ResponseDTO AddSanPham(SanPhamDTO sanPham, string userId);
 
-        ResponseDTO DeleteSanPham(string maSanPham);
+        ResponseDTO DeleteSanPham(string maSanPham, string userId);
 
-        ResponseDTO UpdateSanPham(SanPham sanPham);
+        ResponseDTO UpdateSanPham(SanPham sanPham, string userId);
     }
 }

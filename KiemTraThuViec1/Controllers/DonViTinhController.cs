@@ -1,8 +1,12 @@
-﻿using KiemTraThuViec1.Data.Entities;
+﻿using KiemTraThuViec1.Data;
+using KiemTraThuViec1.Data.Entities;
+using KiemTraThuViec1.Data.Models;
 using KiemTraThuViec1.DTO;
 using KiemTraThuViec1.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace KiemTraThuViec1.Controllers
 {
@@ -10,10 +14,12 @@ namespace KiemTraThuViec1.Controllers
     [ApiController]
     public class DonViTinhController : ControllerBase
     {
-        private IDonViTinhService _donViTinhService;
-        public DonViTinhController(IDonViTinhService donViTinhService)
+        private readonly IDonViTinhService _donViTinhService;
+        private readonly IUserService _userService;
+        public DonViTinhController(IDonViTinhService donViTinhService, IUserService userService)
         {
             _donViTinhService = donViTinhService;
+            _userService = userService;
         }
 
         [HttpGet("ma/{ma}")]
@@ -31,34 +37,64 @@ namespace KiemTraThuViec1.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = UserRoles.Admin)]
         public IActionResult AddDonViTinh(DonViTinhDTO dto)
         {
-            var donViTinh = new DonViTinh
+            string? userId = _userService.GetCurrentUser();
+            if(userId != null)
             {
-                MaDonViTinh = dto.MaDonViTinh,
-                TenDonViTinh = dto.TenDonViTinh
-            };
-            var res = _donViTinhService.AddDonViTinh(donViTinh);
-            return StatusCode(res.code, res);
+                var donViTinh = new DonViTinh
+                {
+                    MaDonViTinh = dto.MaDonViTinh,
+                    TenDonViTinh = dto.TenDonViTinh
+                };
+                var res = _donViTinhService.AddDonViTinh(donViTinh, userId);
+                return StatusCode(res.code, res);
+            }
+            return StatusCode(401, new ResponseDTO
+            {
+                code = 401,
+                message = "Bạn không có quyền truy cập vào tài nguyên này"
+            });
         }
 
         [HttpDelete]
+        [Authorize(Roles = UserRoles.Admin)]
         public IActionResult DeleteDonViTinh(string ma)
         {
-            var res = _donViTinhService.DeleteDonViTinh(ma);
-            return StatusCode(res.code, res);
+            string? userId = _userService.GetCurrentUser();
+            if(userId != null)
+            {
+                var res = _donViTinhService.DeleteDonViTinh(ma, userId);
+                return StatusCode(res.code, res);
+            }
+            return StatusCode(401, new ResponseDTO
+            {
+                code = 401,
+                message = "Bạn không có quyền truy cập vào tài nguyên này"
+            });
         }
 
         [HttpPut]
+        [Authorize(Roles = UserRoles.Admin)]
         public IActionResult UpdateDonViTinh(DonViTinhDTO dto)
         {
-            var donViTinh = new DonViTinh
+            string? userId = _userService.GetCurrentUser();
+            if(userId != null)
             {
-                MaDonViTinh = dto.MaDonViTinh,
-                TenDonViTinh = dto.TenDonViTinh
-            };
-            var res = _donViTinhService.UpdateDonViTinh(donViTinh);
-            return StatusCode(res.code, res);
+                var donViTinh = new DonViTinh
+                {
+                    MaDonViTinh = dto.MaDonViTinh,
+                    TenDonViTinh = dto.TenDonViTinh
+                };
+                var res = _donViTinhService.UpdateDonViTinh(donViTinh, userId);
+                return StatusCode(res.code, res);
+            }
+            return StatusCode(401, new ResponseDTO
+            {
+                code = 401,
+                message = "Bạn không có quyền truy cập vào tài nguyên này"
+            });
         }
     }
 }

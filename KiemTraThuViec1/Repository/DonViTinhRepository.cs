@@ -13,7 +13,7 @@ namespace KiemTraThuViec1.Repository
 
         List<DonViTinh>? IDonViTinhRepository.GetDonViTinhByName(string name)
         {
-            return _context.DonViTinhs.Where(lvt => lvt.TenDonViTinh.Equals(name)).ToList();
+            return _context.DonViTinhs.Where(lvt => lvt.TenDonViTinh.Equals(name) && lvt.IsDeleted == false).ToList();
         }
 
         List<DonViTinh>? IDonViTinhRepository.GetDonViTinhs()
@@ -33,7 +33,7 @@ namespace KiemTraThuViec1.Repository
 
         void IDonViTinhRepository.DeleteDonViTinh(DonViTinh donViTinh)
         {
-            _context.DonViTinhs.Remove(donViTinh);
+            _context.DonViTinhs.Update(donViTinh);
         }
 
 

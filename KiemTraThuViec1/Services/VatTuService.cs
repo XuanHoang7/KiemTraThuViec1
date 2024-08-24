@@ -21,7 +21,7 @@ namespace KiemTraThuViec1.Services
             _donViTinhRepository = donViTinhRepository;
             _sanPhamVatTuRepository = sanPhamVatTuRepository;
         }
-        ResponseDTO IVatTuService.AddVatTu(VatTuDTO dto)
+        ResponseDTO IVatTuService.AddVatTu(VatTuDTO dto, string userId)
         {
             try
             {
@@ -45,6 +45,8 @@ namespace KiemTraThuViec1.Services
                                     DonViTinhId = donViTinh.Id
 
                                 };
+                                vatTu.CreateDate = DateTime.Now;
+                                vatTu.CreateBy = userId;
                                 _vatTuRepository.AddVatTu(vatTu);
                                 try
                                 {
@@ -105,7 +107,7 @@ namespace KiemTraThuViec1.Services
             }
         }
 
-        ResponseDTO IVatTuService.DeleteVatTu(string maVatTu)
+        ResponseDTO IVatTuService.DeleteVatTu(string maVatTu, string userId)
         {
             var vatTu = _vatTuRepository.GetVatTuByMa(maVatTu);
             if (vatTu != null)
@@ -120,6 +122,9 @@ namespace KiemTraThuViec1.Services
                         description = null
                     };
                 }
+                vatTu.IsDeleted = true;
+                vatTu.DeleteDate = DateTime.Now;
+                vatTu.DeleteBy = userId;
                 _vatTuRepository.DeleteVatTu(vatTu);
                 if (_vatTuRepository.IsSaveChange()) return new ResponseDTO()
                 {
@@ -202,7 +207,7 @@ namespace KiemTraThuViec1.Services
             }
         }
 
-        ResponseDTO IVatTuService.UpdateVatTu(VatTu vatTu)
+        ResponseDTO IVatTuService.UpdateVatTu(VatTu vatTu, string userId)
         {
             var check = _vatTuRepository.GetVatTuByMa(vatTu.MaVatTu);
 
@@ -220,8 +225,9 @@ namespace KiemTraThuViec1.Services
             check.TenVatTu = vatTu.TenVatTu;
             check.SanPhamVatTus = vatTu.SanPhamVatTus;
 
-
-            _vatTuRepository.UpdateVatTu(vatTu);
+            check.UpdateDate = DateTime.Now;
+            check.UpdateBy = userId;
+            _vatTuRepository.UpdateVatTu(check);
             if (_vatTuRepository.IsSaveChange()) return new ResponseDTO()
             {
                 code = 200,

@@ -9,10 +9,10 @@ namespace KiemTraThuViec1.Services
 
         ResponseDTO GetDonViTinhByMa(string maDonViTinh);
 
-        ResponseDTO AddDonViTinh(DonViTinh donViTinh);
+        ResponseDTO AddDonViTinh(DonViTinh donViTinh, string userId);
 
-        ResponseDTO DeleteDonViTinh(string maDonViTinh);
+        ResponseDTO DeleteDonViTinh(string maDonViTinh, string userId);
 
-        ResponseDTO UpdateDonViTinh(DonViTinh donViTinh);
+        ResponseDTO UpdateDonViTinh(DonViTinh donViTinh, string userId);
     }
 }

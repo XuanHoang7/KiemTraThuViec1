@@ -13,7 +13,7 @@ namespace KiemTraThuViec1.Repository
 
         List<LoaiVatTu>? ILoiVatTuRepository.GetLoaiVatTuByName(string name)
         {
-            return _context.LoaiVatTus.Where(lvt => lvt.TenLoaiVatTu.Equals(name)).ToList();
+            return _context.LoaiVatTus.Where(lvt => lvt.TenLoaiVatTu.Equals(name) && lvt.IsDeleted == false).ToList();
         }
         List<LoaiVatTu>? ILoiVatTuRepository.GetLoaiVatTus()
         {
@@ -32,7 +32,7 @@ namespace KiemTraThuViec1.Repository
 
         void ILoiVatTuRepository.DeleteLoaiVatTu(LoaiVatTu loaiVatTu)
         {
-            _context.LoaiVatTus.Remove(loaiVatTu);
+            _context.LoaiVatTus.Update(loaiVatTu);
         }
 
 

@@ -16,7 +16,7 @@ namespace KiemTraThuViec1.Services
             _VatTuRepository = vatTuRepository;
             _PhamRepository = sanPhamRepository;
         }
-        ResponseDTO IDonViTinhService.AddDonViTinh(DonViTinh donViTinh)
+        ResponseDTO IDonViTinhService.AddDonViTinh(DonViTinh donViTinh, string userId)
         {
             try
             {
@@ -24,6 +24,8 @@ namespace KiemTraThuViec1.Services
                 {
                     if (!string.IsNullOrWhiteSpace(donViTinh.MaDonViTinh))
                     {
+                        donViTinh.CreateDate = DateTime.Now;
+                        donViTinh.CreateBy = userId;
                         _DonViTinhRepository.AddDonViTinh(donViTinh);
                         if (_DonViTinhRepository.IsSaveChange()) return new ResponseDTO()
                         {
@@ -64,7 +66,7 @@ namespace KiemTraThuViec1.Services
             }
         }
 
-        ResponseDTO IDonViTinhService.DeleteDonViTinh(string maDonViTinh)
+        ResponseDTO IDonViTinhService.DeleteDonViTinh(string maDonViTinh, string userId)
         {
             var donViTinh = _DonViTinhRepository.GetDonViTinhByMa(maDonViTinh);
             if (donViTinh != null)
@@ -81,6 +83,8 @@ namespace KiemTraThuViec1.Services
                         description = null
                     };
                 }
+                donViTinh.IsDeleted = true;
+                donViTinh.DeleteBy = userId;
                 _DonViTinhRepository.DeleteDonViTinh(donViTinh);
                 if (_DonViTinhRepository.IsSaveChange()) return new ResponseDTO()
                 {
@@ -163,7 +167,7 @@ namespace KiemTraThuViec1.Services
             }
         }
 
-        ResponseDTO IDonViTinhService.UpdateDonViTinh(DonViTinh donViTinh)
+        ResponseDTO IDonViTinhService.UpdateDonViTinh(DonViTinh donViTinh, string userId)
         {
             var check = _DonViTinhRepository.GetDonViTinhByMa(donViTinh.MaDonViTinh);
 
@@ -176,6 +180,8 @@ namespace KiemTraThuViec1.Services
             check.TenDonViTinh = donViTinh.TenDonViTinh;
             check.SanPhams = donViTinh.SanPhams;
             check.VatTus = donViTinh.VatTus;
+            check.UpdateDate = DateTime.Now;
+            check.UpdateBy = userId;
             _DonViTinhRepository.UpdateDonViTinh(check);
             if (_DonViTinhRepository.IsSaveChange()) return new ResponseDTO()
             {

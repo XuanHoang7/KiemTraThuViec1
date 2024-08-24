@@ -1,6 +1,9 @@
-﻿using KiemTraThuViec1.Data.Entities;
+﻿using KiemTraThuViec1.Data;
+using KiemTraThuViec1.Data.Entities;
+using KiemTraThuViec1.Data.Models;
 using KiemTraThuViec1.DTO;
 using KiemTraThuViec1.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,9 +14,11 @@ namespace KiemTraThuViec1.Controllers
     public class SanPhamController : ControllerBase
     {
         private ISanPhamService _sanPhamService;
-        public SanPhamController(ISanPhamService sanPhamService)
+        private IUserService _userService;
+        public SanPhamController(ISanPhamService sanPhamService, IUserService userService)
         {
             _sanPhamService = sanPhamService;
+            _userService = userService;
         }
 
         [HttpGet("ma/{ma}")]
@@ -31,25 +36,54 @@ namespace KiemTraThuViec1.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = UserRoles.Admin)]
         public IActionResult AddSanPham(SanPhamDTO dto)
         {
-            
-            var res = _sanPhamService.AddSanPham(dto);
-            return StatusCode(res.code, res);
+            string? userId = _userService.GetCurrentUser();
+            if(userId != null)
+            {
+                var res = _sanPhamService.AddSanPham(dto, userId);
+                return StatusCode(res.code, res);
+            }
+            return StatusCode(401, new ResponseDTO
+            {
+                code = 401,
+                message = "Bạn không có quyền truy cập vào tài nguyên này"
+            });
         }
 
         [HttpDelete]
+        [Authorize(Roles = UserRoles.Admin)]
         public IActionResult DeleteSanPham(string ma)
         {
-            var res = _sanPhamService.DeleteSanPham(ma);
-            return StatusCode(res.code, res);
+            string? userId = _userService.GetCurrentUser();
+            if(userId != null)
+            {
+                var res = _sanPhamService.DeleteSanPham(ma, userId);
+                return StatusCode(res.code, res);
+            }
+            return StatusCode(401, new ResponseDTO
+            {
+                code = 401,
+                message = "Bạn không có quyền truy cập vào tài nguyên này"
+            });
         }
 
         [HttpPut]
+        [Authorize(Roles = UserRoles.Admin)]
         public IActionResult UpdateSanPham(SanPham sanPham)
         {
-            var res = _sanPhamService.UpdateSanPham(sanPham);
-            return StatusCode(res.code, res);
+            string? userId = _userService.GetCurrentUser();
+            if(userId != null)
+            {
+                var res = _sanPhamService.UpdateSanPham(sanPham, userId);
+                return StatusCode(res.code, res);
+            }
+            return StatusCode(401, new ResponseDTO
+            {
+                code = 401,
+                message = "Bạn không có quyền truy cập vào tài nguyên này"
+            });
         }
     }
 }

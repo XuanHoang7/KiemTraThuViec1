@@ -1,6 +1,9 @@
-﻿using KiemTraThuViec1.Data.Entities;
+﻿using KiemTraThuViec1.Data;
+using KiemTraThuViec1.Data.Entities;
+using KiemTraThuViec1.Data.Models;
 using KiemTraThuViec1.DTO;
 using KiemTraThuViec1.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,9 +14,11 @@ namespace KiemTraThuViec1.Controllers
     public class VatTuController : ControllerBase
     {
         private IVatTuService _vatTuService;
-        public VatTuController(IVatTuService vatTuService)
+        private readonly IUserService _userService;
+        public VatTuController(IVatTuService vatTuService, IUserService  userService)
         {
             _vatTuService = vatTuService;
+            _userService = userService;
         }
 
         [HttpGet("ma/{ma}")]
@@ -31,30 +36,59 @@ namespace KiemTraThuViec1.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = UserRoles.Admin)]
         public IActionResult AddVatTu(VatTuDTO dto)
         {
-
-            var res = _vatTuService.AddVatTu(dto);
-            return StatusCode(res.code, res);
+            string? userId = _userService.GetCurrentUser();
+            if(userId != null)
+            {
+                var res = _vatTuService.AddVatTu(dto, userId);
+                return StatusCode(res.code, res);
+            }
+            return StatusCode(401, new ResponseDTO
+            {
+                code = 401,
+                message = "Bạn không có quyền truy cập vào tài nguyên này"
+            });
         }
 
         [HttpDelete]
+        [Authorize(Roles = UserRoles.Admin)]
         public IActionResult DeleteVatTu(string ma)
         {
-            var res = _vatTuService.DeleteVatTu(ma);
-            return StatusCode(res.code, res);
+            string? userId = _userService.GetCurrentUser();
+            if(userId != null)
+            {
+                var res = _vatTuService.DeleteVatTu(ma, userId);
+                return StatusCode(res.code, res);
+            }
+            return StatusCode(401, new ResponseDTO
+            {
+                code = 401,
+                message = "Bạn không có quyền truy cập vào tài nguyên này"
+            });
         }
 
         [HttpPut]
+        [Authorize(Roles = UserRoles.Admin)]
         public IActionResult UpdateVatTu(VatTuDTO dto)
         {
-            var vatTu = new VatTu
+            string? userId = _userService.GetCurrentUser();
+            if(userId != null)
             {
-                MaVatTu = dto.MaVatTu,
-                TenVatTu = dto.TenVatTu
-            };
-            var res = _vatTuService.UpdateVatTu(vatTu);
-            return StatusCode(res.code, res);
+                var vatTu = new VatTu
+                {
+                    MaVatTu = dto.MaVatTu,
+                    TenVatTu = dto.TenVatTu
+                };
+                var res = _vatTuService.UpdateVatTu(vatTu, userId);
+                return StatusCode(res.code, res);
+            }
+            return StatusCode(401, new ResponseDTO
+            {
+                code = 401,
+                message = "Bạn không có quyền truy cập vào tài nguyên này"
+            });
         }
     }
 }

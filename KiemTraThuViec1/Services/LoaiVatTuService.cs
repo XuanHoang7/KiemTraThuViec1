@@ -14,7 +14,7 @@ namespace KiemTraThuViec1.Services
             _loiVatTuRepository = loiVatTuRepository;
             _vatTuRepository = vatTuRepository;
         }
-        ResponseDTO ILoaiVatTuService.AddLoaiVatTu(LoaiVatTu loaiVatTu)
+        ResponseDTO ILoaiVatTuService.AddLoaiVatTu(LoaiVatTu loaiVatTu, string userId)
         {
             try
             {
@@ -22,6 +22,8 @@ namespace KiemTraThuViec1.Services
                 {
                     if (!string.IsNullOrWhiteSpace(loaiVatTu.MaLoaiVatTu))
                     {
+                        loaiVatTu.CreateDate = DateTime.Now;
+                        loaiVatTu.CreateBy = userId;
                         _loiVatTuRepository.AddLoaiVatTu(loaiVatTu);
                         if (_loiVatTuRepository.IsSaveChange()) return new ResponseDTO()
                         {
@@ -62,7 +64,7 @@ namespace KiemTraThuViec1.Services
             }
         }
 
-        ResponseDTO ILoaiVatTuService.DeleteLoaiVatTu(string maLoaiVatTu)
+        ResponseDTO ILoaiVatTuService.DeleteLoaiVatTu(string maLoaiVatTu, string userId)
         {
             var loaiVatTu = _loiVatTuRepository.GetLoaiVatTuByMa(maLoaiVatTu);
             if (loaiVatTu != null)
@@ -77,6 +79,9 @@ namespace KiemTraThuViec1.Services
                         description = null
                     };
                 }
+                loaiVatTu.IsDeleted = true;
+                loaiVatTu.DeleteDate = DateTime.Now;
+                loaiVatTu.DeleteBy = userId;
                 _loiVatTuRepository.DeleteLoaiVatTu(loaiVatTu);
                 if (_loiVatTuRepository.IsSaveChange()) return new ResponseDTO()
                 {
@@ -159,7 +164,7 @@ namespace KiemTraThuViec1.Services
             }
         }
 
-        ResponseDTO ILoaiVatTuService.UpdateLoaiVatTu(LoaiVatTu loaiVatTu)
+        ResponseDTO ILoaiVatTuService.UpdateLoaiVatTu(LoaiVatTu loaiVatTu, string userId)
         {
             var check = _loiVatTuRepository.GetLoaiVatTuByMa(loaiVatTu.MaLoaiVatTu);
 
@@ -171,8 +176,8 @@ namespace KiemTraThuViec1.Services
             };
             check.TenLoaiVatTu = loaiVatTu.TenLoaiVatTu;
             check.VatTus = loaiVatTu.VatTus;
-            
-
+            check.UpdateDate = DateTime.Now;
+            check.UpdateBy = userId;
             _loiVatTuRepository.UpdateLoaiVatTu(check);
             if (_loiVatTuRepository.IsSaveChange()) return new ResponseDTO()
             {

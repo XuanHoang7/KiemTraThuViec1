@@ -13,7 +13,7 @@ namespace KiemTraThuViec1.Repository
 
         List<VatTu>? IVatTuRepository.GetVatTuByName(string name)
         {
-            return _context.VatTus.Where(lvt => lvt.TenVatTu.Equals(name)).ToList();
+            return _context.VatTus.Where(lvt => lvt.TenVatTu.Equals(name) && lvt.IsDeleted == false).ToList();
         }
 
         List<VatTu>? IVatTuRepository.GetVattus()
@@ -33,7 +33,7 @@ namespace KiemTraThuViec1.Repository
 
         void IVatTuRepository.DeleteVatTu(VatTu vatTu)
         {
-            _context.VatTus.Remove(vatTu);
+            _context.VatTus.Update(vatTu);
         }
 
 

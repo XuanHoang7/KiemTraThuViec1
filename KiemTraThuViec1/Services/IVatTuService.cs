@@ -10,10 +10,10 @@ namespace KiemTraThuViec1.Services
 
         ResponseDTO GetVatTuByMa(string maVatTu);
 
-        ResponseDTO AddVatTu(VatTuDTO dto);
+        ResponseDTO AddVatTu(VatTuDTO dto, string userId);
 
-        ResponseDTO DeleteVatTu(string maVatTu);
+        ResponseDTO DeleteVatTu(string maVatTu, string userId);
 
-        ResponseDTO UpdateVatTu(VatTu vatTu);
+        ResponseDTO UpdateVatTu(VatTu vatTu, string userId);
     }
 }

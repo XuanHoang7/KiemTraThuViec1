@@ -2,7 +2,7 @@
 
 namespace KiemTraThuViec1.Data.Entities
 {
-    public class SanPham
+    public class SanPham : Entity
     {
         public int Id { get; set; }
 

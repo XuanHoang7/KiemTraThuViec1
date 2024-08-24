@@ -1,6 +1,9 @@
-﻿using KiemTraThuViec1.Data.Entities;
+﻿using KiemTraThuViec1.Data;
+using KiemTraThuViec1.Data.Entities;
+using KiemTraThuViec1.Data.Models;
 using KiemTraThuViec1.DTO;
 using KiemTraThuViec1.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,9 +14,11 @@ namespace KiemTraThuViec1.Controllers
     public class LoaiVatTuController : ControllerBase
     {
         private ILoaiVatTuService _loaiVatTuService;
-        public LoaiVatTuController(ILoaiVatTuService loaiVatTuService)
+        private IUserService _userService;
+        public LoaiVatTuController(ILoaiVatTuService loaiVatTuService, IUserService userService)
         {
             _loaiVatTuService = loaiVatTuService;
+            _userService = userService;
         }
 
         [HttpGet("ma/{ma}")]
@@ -31,34 +36,64 @@ namespace KiemTraThuViec1.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = UserRoles.Admin)]
         public IActionResult AddLoaiVatTu(LoaiVatTuDTO dto)
         {
-            var loaiVatTu = new LoaiVatTu
+            string? userId = _userService.GetCurrentUser();
+            if(userId != null)
             {
-                MaLoaiVatTu = dto.MaLoaiVatTu,
-                TenLoaiVatTu = dto.TenLoaiVatTu
-            };
-            var res = _loaiVatTuService.AddLoaiVatTu(loaiVatTu);
-            return StatusCode(res.code, res);
+                var loaiVatTu = new LoaiVatTu
+                {
+                    MaLoaiVatTu = dto.MaLoaiVatTu,
+                    TenLoaiVatTu = dto.TenLoaiVatTu
+                };
+                var res = _loaiVatTuService.AddLoaiVatTu(loaiVatTu, userId);
+                return StatusCode(res.code, res);
+            }
+            return StatusCode(401, new ResponseDTO
+            {
+                code = 401,
+                message = "Bạn không có quyền truy cập vào tài nguyên này"
+            });
         }
 
         [HttpDelete]
+        [Authorize(Roles = UserRoles.Admin)]
         public IActionResult DeleteLoaiVatTu(string ma)
         {
-            var res = _loaiVatTuService.DeleteLoaiVatTu(ma);
-            return StatusCode(res.code, res);
+            string? userId = _userService.GetCurrentUser();
+            if(userId != null)
+            {
+                var res = _loaiVatTuService.DeleteLoaiVatTu(ma, userId);
+                return StatusCode(res.code, res);
+            }
+            return StatusCode(401, new ResponseDTO
+            {
+                code = 401,
+                message = "Bạn không có quyền truy cập vào tài nguyên này"
+            });
         }
 
         [HttpPut]
+        [Authorize(Roles = UserRoles.Admin)]
         public IActionResult UpdateLoaiVatTu(LoaiVatTuDTO dto)
         {
-            var loaiVatTu = new LoaiVatTu
+            string? userId = _userService.GetCurrentUser();
+            if(userId != null)
             {
-                MaLoaiVatTu = dto.MaLoaiVatTu,
-                TenLoaiVatTu = dto.TenLoaiVatTu
-            };
-            var res = _loaiVatTuService.UpdateLoaiVatTu(loaiVatTu);
-            return StatusCode(res.code, res);
+                var loaiVatTu = new LoaiVatTu
+                {
+                    MaLoaiVatTu = dto.MaLoaiVatTu,
+                    TenLoaiVatTu = dto.TenLoaiVatTu
+                };
+                var res = _loaiVatTuService.UpdateLoaiVatTu(loaiVatTu, userId);
+                return StatusCode(res.code, res);
+            }
+            return StatusCode(401, new ResponseDTO
+            {
+                code = 401,
+                message = "Bạn không có quyền truy cập vào tài nguyên này"
+            });
         }
     }
 }

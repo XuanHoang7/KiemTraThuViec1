@@ -20,7 +20,7 @@ namespace KiemTraThuViec1.Services
             _IVatTuRepository = vatTuRepository;
             _sanPhamVatTuRepository = sanPhamVatTuRepository;
         }
-        ResponseDTO ISanPhamService.AddSanPham(SanPhamDTO dto)
+        ResponseDTO ISanPhamService.AddSanPham(SanPhamDTO dto, string userId)
         {
             try
             {
@@ -79,8 +79,12 @@ namespace KiemTraThuViec1.Services
                             }
                             foreach (var sanPhamVatTu in vatTuList)
                             {
+                                sanPhamVatTu.CreateBy = userId;
+                                sanPhamVatTu.CreateDate = DateTime.Now;
                                 _sanPhamVatTuRepository.AddSanPhamVatTu(sanPhamVatTu);
                             }
+                            sanPham.CreateBy = userId;
+                            sanPham.CreateDate = DateTime.Now;
                             _SanPhamRepository.AddSanPham(sanPham);
                             if (_SanPhamRepository.IsSaveChange()) return new ResponseDTO()
                             {
@@ -131,11 +135,14 @@ namespace KiemTraThuViec1.Services
             }
         }
 
-        ResponseDTO ISanPhamService.DeleteSanPham(string maSanPham)
+        ResponseDTO ISanPhamService.DeleteSanPham(string maSanPham, string userId)
         {
             var sanPham = _SanPhamRepository.GetSanPhamByMa(maSanPham);
             if (sanPham != null)
             {
+                sanPham.IsDeleted = true;
+                sanPham.DeleteBy = userId;
+                sanPham.DeleteDate = DateTime.Now;
                 _SanPhamRepository.DeleteSanPham(sanPham);
                 if (_SanPhamRepository.IsSaveChange()) return new ResponseDTO()
                 {
@@ -218,7 +225,7 @@ namespace KiemTraThuViec1.Services
             }
         }
 
-        ResponseDTO ISanPhamService.UpdateSanPham(SanPham sanPham)
+        ResponseDTO ISanPhamService.UpdateSanPham(SanPham sanPham, string userId)
         {
             var check = _SanPhamRepository.GetSanPhamByMa(sanPham.MaSanPham);
 
@@ -233,7 +240,8 @@ namespace KiemTraThuViec1.Services
             check.SanPhamVatTus = sanPham.SanPhamVatTus;
             check.DonViTinh = sanPham.DonViTinh;
             check.DonViTinhId = sanPham.DonViTinhId;
-
+            check.UpdateBy = userId;
+            check.UpdateDate = DateTime.Now;
             _SanPhamRepository.UpdateSanPham(check);
             if (_SanPhamRepository.IsSaveChange()) return new ResponseDTO()
             {

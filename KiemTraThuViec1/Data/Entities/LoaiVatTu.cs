@@ -2,7 +2,7 @@
 
 namespace KiemTraThuViec1.Data.Entities
 {
-    public class LoaiVatTu
+    public class LoaiVatTu : Entity
     {
         public int Id { get; set; }
 

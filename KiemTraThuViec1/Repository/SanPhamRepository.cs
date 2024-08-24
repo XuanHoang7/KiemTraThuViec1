@@ -13,7 +13,7 @@ namespace KiemTraThuViec1.Repository
 
         List<SanPham>? ISanPhamRepository.GetSanPhamByName(string name)
         {
-            return _context.SanPhams.Where(lvt => lvt.TenSanPham.Equals(name)).ToList();
+            return _context.SanPhams.Where(lvt => lvt.TenSanPham.Equals(name) && lvt.IsDeleted == false).ToList();
         }
         List<SanPham>? ISanPhamRepository.GetSanPhams()
         {
@@ -32,7 +32,7 @@ namespace KiemTraThuViec1.Repository
 
         void ISanPhamRepository.DeleteSanPham(SanPham sanPham)
         {
-            _context.SanPhams.Remove(sanPham);
+            _context.SanPhams.Update(sanPham);
         }
 
 
